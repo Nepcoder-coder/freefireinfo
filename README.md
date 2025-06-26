@@ -9,7 +9,7 @@ A simple and powerful PHP application to fetch **Garena Free Fire** player profi
 
 ## 🌐 Live Demo (Optional)
 
-[Visit Live App](#) — *(Insert your deployed URL here)*
+[Visit Live App](freefireinfo.wt.cs) — *(Insert your deployed URL here)*
 
 ---
 
@@ -26,7 +26,7 @@ A simple and powerful PHP application to fetch **Garena Free Fire** player profi
 
 ## 🖼️ Preview
 
-![App Screenshot Placeholder](https://via.placeholder.com/800x400?text=Free+Fire+Info+Lookup)
+![App Screenshot Placeholder](https://i.ibb.co/TxKRxZ0q/image.png)
 
 ---
 
@@ -35,5 +35,5 @@ A simple and powerful PHP application to fetch **Garena Free Fire** player profi
 ### 1. Clone Repository
 
 ```bash
-git clone https://github.com/yourusername/freefire-info.git
+git clone [https://github.com/yourusername/freefire-info.git](https://github.com/Nepcoder-coder/freefireinfo)
 cd freefire-info
