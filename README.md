@@ -9,7 +9,7 @@ A simple and powerful PHP application to fetch **Garena Free Fire** player profi
 
 ## 🌐 Live Demo
 
-[Visit Live App](freefireinfo.ct.ws)
+👉 [Visit Live App](https://freefireinfo.ct.ws/?i=1)
 
 ---
 
