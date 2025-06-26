@@ -2,27 +2,29 @@
 $playerData = null;
 $error = null;
 
-// Function to fetch item details from the icon API
+// Function to fetch item details from the new API (returns image directly)
 function fetchItemDetails($itemId) {
     if (empty($itemId)) return null;
-    
-    $iconApiUrl = "https://freefireicon.backtonep.workers.dev/?id=" . $itemId;
-    $context = stream_context_create([
-        'http' => [
-            'timeout' => 5,
-            'method' => 'GET',
-            'header' => 'User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'
-        ]
-    ]);
-    
-    $response = @file_get_contents($iconApiUrl, false, $context);
-    if ($response !== false) {
-        $itemData = json_decode($response, true);
-        if (json_last_error() === JSON_ERROR_NONE && isset($itemData['image_url'])) {
-            return $itemData;
-        }
+
+    // Direct image link from new API
+    $imageUrl = "https://ff-itmes-api.vercel.app/?item_id=" . urlencode($itemId);
+
+    // Optionally, you can check if the image exists (optional, for fallback)
+    $headers = @get_headers($imageUrl, 1);
+    if ($headers && strpos($headers[0], '200') !== false) {
+        return [
+            'id' => $itemId,
+            'description' => 'Item #' . $itemId,
+            'image_url' => $imageUrl
+        ];
     }
-    return null;
+
+    // Fallback if image not found
+    return [
+        'id' => $itemId,
+        'description' => 'Item #' . $itemId,
+        'image_url' => null
+    ];
 }
 
 // Function to get multiple item details with caching
@@ -793,7 +795,7 @@ function displayItemWithIcon($item, $defaultIcon = 'fas fa-question', $size = 'w
     
     <!-- Theme Toggle Button -->
     <div class="theme-toggle">
-        <button onclick="toggleTheme()" class="glass-light dark:glass-dark p-3 rounded-full text-gray-800 dark:text-white hover:scale-110 transition-all duration-300 will-change-transform shadow-lg" title="Toggle Theme">
+        <button onclick="toggleTheme()" class="glass-light dark:glass-dark p-3 rounded-full text-gray-800 dark:text-white hover:scale-110 transition-all duration-300 shadow-lg" title="Toggle Theme">
             <i class="fas fa-moon dark:hidden text-lg"></i>
             <i class="fas fa-sun hidden dark:inline text-lg"></i>
         </button>
@@ -1075,22 +1077,22 @@ function displayItemWithIcon($item, $defaultIcon = 'fas fa-question', $size = 'w
                     <div class="glass-light dark:glass-dark rounded-xl p-4 text-center card-hover">
                         <i class="fas fa-calendar-plus text-3xl text-green-500 mb-3"></i>
                         <div class="text-sm font-bold text-gray-900 dark:text-white"><?= date('M d, Y', $playerData['AccountInfo']['AccountCreateTime']) ?></div>
-                        <div class="text-gray-700 dark:text-gray-400 text-xs">Created</div>
+                        <div class="text-gray-700 dark:text-gray-400 text-xs font-semibold">Created</div>
                     </div>
                     <div class="glass-light dark:glass-dark rounded-xl p-4 text-center card-hover">
                         <i class="fas fa-clock text-3xl text-orange-500 mb-3"></i>
                         <div class="text-sm font-bold text-gray-900 dark:text-white"><?= date('M d, Y', $playerData['AccountInfo']['AccountLastLogin']) ?></div>
-                        <div class="text-gray-700 dark:text-gray-400 text-xs">Last Login</div>
+                        <div class="text-gray-700 dark:text-gray-400 text-xs font-semibold">Last Login</div>
                     </div>
                     <div class="glass-light dark:glass-dark rounded-xl p-4 text-center card-hover">
                         <i class="fas fa-user-circle text-3xl text-purple-500 mb-3"></i>
                         <div class="text-sm font-bold text-gray-900 dark:text-white"><?= $playerData['AccountInfo']['AccountAvatarId'] ?></div>
-                        <div class="text-gray-700 dark:text-gray-400 text-xs">Avatar ID</div>
+                        <div class="text-gray-700 dark:text-gray-400 text-xs font-semibold">Avatar ID</div>
                     </div>
                     <div class="glass-light dark:glass-dark rounded-xl p-4 text-center card-hover">
                         <i class="fas fa-calendar-alt text-3xl text-red-500 mb-3"></i>
                         <div class="text-sm font-bold text-gray-900 dark:text-white">Season <?= $playerData['AccountInfo']['AccountSeasonId'] ?></div>
-                        <div class="text-gray-700 dark:text-gray-400 text-xs">Current Season</div>
+                        <div class="text-gray-700 dark:text-gray-400 text-xs font-semibold">Current Season</div>
                     </div>
                 </div>
             </div>
@@ -1225,7 +1227,7 @@ function displayItemWithIcon($item, $defaultIcon = 'fas fa-question', $size = 'w
                             $petDetail = getSingleItemDetail($playerData['petInfo']['id'], 'Pet');
                             echo displayItemWithIcon($petDetail, 'fas fa-dog', 'w-12 h-12 mx-auto mb-2');
                             ?>
-                            <div class="text-lg font-bold text-gray-900 dark:text-white mb-1"><?= htmlspecialchars($playerData['petInfo']['name']) ?></div>
+                            <div class="text-lg font-bold text-gray-900 dark:text-white mb-1"><?= htmlspecialchars($playerData['petInfo']['name'] ?? 'Pet') ?></div>
                             <div class="text-gray-700 dark:text-gray-400 text-xs">Pet Name</div>
                         </div>
                         <div class="text-center glass-light dark:glass-dark p-4 rounded-xl card-hover">
